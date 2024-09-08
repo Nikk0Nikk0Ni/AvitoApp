@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">AvitoApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">Логин…</string>
+    <string name="password">Пароль…</string>
+    <string name="txt_enter">Вход</string>
+    <string name="txt_registration">Регистрация</string>
+    <string name="btn_enter">Войти</string>
+    <string name="name">Имя…</string>
+    <string name="email">Email…</string>
+    <string name="confirm_password">Подтверждение пароля…</string>
+</resources>
