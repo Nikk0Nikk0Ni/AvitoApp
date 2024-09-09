@@ -2,6 +2,7 @@ package di.components
 
 import android.content.Context
 import com.niko.avitoapp.fragments.LoginFragment
+import com.niko.avitoapp.fragments.RegistrationFragment
 import dagger.BindsInstance
 import dagger.Component
 import di.annotation.ApplicationScope
@@ -13,6 +14,7 @@ import di.modules.ViewModelsModule
 @Component(modules = [DataModule::class,DomainModule::class,ViewModelsModule::class])
 interface FakeApiComponent {
     fun inject(fragment: LoginFragment)
+    fun inject(fragment: RegistrationFragment)
     @Component.Factory
     interface  FakeApiComponentFactory{
         fun create(@BindsInstance context: Context):FakeApiComponent

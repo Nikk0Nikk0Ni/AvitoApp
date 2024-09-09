@@ -64,5 +64,5 @@ class LogInViewModel @Inject constructor(
         return regular.matches(email)
     }
 
-    private fun isValidPassword(password: String) = password.length <= 24
+    private fun isValidPassword(password: String) = password.length in 8..24
 }

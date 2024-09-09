@@ -13,8 +13,13 @@
     <string name="emailRegularPattern">^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$</string>
     <string name="mustntEmptyField">Поле не должно быть пустым</string>
     <string name="incorrectEmail">Некорректный email</string>
-    <string name="incorrectPassword">Ошибка, длинна пароля должна быть меньше 24 символов</string>
+    <string name="incorrectPassword">Ошибка, длинна пароля должна быть больше 8 и меньше 24 символов</string>
     <string name="userNotFound">Пользователь не найден</string>
     <string name="haventAccount">У меня нет аккаунта</string>
     <string name="fragment_login_null">Fragment Login == null</string>
+    <string name="fragment_registration_null">Fragment Registration == null</string>
+    <string name="isntSamePassword">Пароли не совпадают</string>
+    <string name="registration_error">Ошибка регистрации</string>
+    <string name="have_already_account">У меня есть аккаунт</string>
+    <string name="repeat_password">Повторите пароль…</string>
 </resources>

@@ -57,13 +57,13 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initBtnLogin()
+        initRegistrationTv()
         observeError()
         resetError()
-        registerUser()
         observeCorrectLogin()
     }
 
-    private fun registerUser() {
+    private fun initRegistrationTv() {
         binding.tvRegisteration.setOnClickListener{
             RegistrationFragment.navigate(this)
         }
@@ -159,6 +159,11 @@ class LoginFragment : Fragment() {
                 anim {
                     enter = androidx.navigation.ui.R.anim.nav_default_enter_anim
                     popEnter = androidx.navigation.ui.R.anim.nav_default_pop_enter_anim
+                    exit = androidx.navigation.ui.R.anim.nav_default_exit_anim
+                    popExit = androidx.navigation.ui.R.anim.nav_default_pop_exit_anim
+                }
+                popUpTo(R.id.loginFragment){
+                    inclusive = true
                 }
             })
         }
