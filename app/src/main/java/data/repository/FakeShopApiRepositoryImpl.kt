@@ -1,7 +1,9 @@
 package data.repository
 
 import android.util.Log
+import data.network.FakeShopApi
 import data.network.RetrofitClient
+import di.annotation.ApplicationScope
 import domain.models.AuthUserResponse
 import domain.models.LogInUserRequest
 import domain.models.LogInUserResponse
@@ -12,17 +14,17 @@ import domain.repository.FakeShopApiRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
-class FakeShopApiRepositoryImpl : FakeShopApiRepository {
+import javax.inject.Inject
+@ApplicationScope
+class FakeShopApiRepositoryImpl @Inject constructor(private val api: FakeShopApi) : FakeShopApiRepository {
     override suspend fun registerUser(
         name: String,
         email: String,
         password: String,
         cpassword: String,
-        callbackIsRegister: ((Boolean)->Unit)
-    ) {
+    ): Boolean {
         try {
-            val response = RetrofitClient.api.addUser(
+            val response = api.addUser(
                 RegisterUserRequest(
                     name = name,
                     email = email,
@@ -31,19 +33,16 @@ class FakeShopApiRepositoryImpl : FakeShopApiRepository {
                     address = RegisterAddressRequest()
                 )
             )
-            if (response.status == AuthUserResponse.STATUS_SUCCESSFUL) {
-                callbackIsRegister(true)
-            } else {
-                callbackIsRegister(false)
-            }
+            return response.status == AuthUserResponse.STATUS_SUCCESSFUL
         } catch (e: Exception) {
             Log.e("AUF", "Error: ${e.message}")
+            return false
         }
     }
 
     override suspend fun logInUser(email: String, password: String): Boolean {
         try {
-            val response = RetrofitClient.api.logInUser(LogInUserRequest(email,password))
+            val response = api.logInUser(LogInUserRequest(email,password))
             return response.status == LogInUserResponse.STATUS_SUCCESSFUL
         }catch (e: Exception){
             Log.e("AUF","${e.message}")

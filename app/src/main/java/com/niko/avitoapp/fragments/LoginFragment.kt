@@ -1,39 +1,166 @@
 package com.niko.avitoapp.fragments
 
+import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.niko.avitoapp.R
+import com.niko.avitoapp.databinding.FragmentLoginBinding
+import com.niko.avitoapp.viewModels.LogInViewModel
+import com.niko.avitoapp.viewModelsFactory.FakeApiViewModelFactory
 import data.repository.FakeShopApiRepositoryImpl
+import di.FakeApiApplication
 import domain.usecases.LogInUser
 import domain.usecases.RegisterUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 class LoginFragment : Fragment() {
+    private val component by lazy {
+        (requireActivity().application as FakeApiApplication).component
+    }
+
+    @Inject
+    lateinit var viewModelFactory: FakeApiViewModelFactory
+    private val logInViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[LogInViewModel::class.java]
+    }
+    private var _binding: FragmentLoginBinding? = null
+    private val binding: FragmentLoginBinding
+        get() = _binding ?: throw RuntimeException(getString(R.string.fragment_login_null))
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        component.inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false)
+    ): View {
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
     }
-    private val repositoryImpl = FakeShopApiRepositoryImpl()
-    private val logIn = LogInUser(repositoryImpl)
-    private val reg = RegisterUser(repositoryImpl)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        CoroutineScope(Dispatchers.IO).launch {
-            reg("niko","nickokar@yandex.ru","1234567qwerty","1234567qwerty"){}
-            val a =logIn("nickokar@yandex.ru","1234567qwerty")
-            Log.e("AUF","$a")
+        initBtnLogin()
+        observeError()
+        resetError()
+        registerUser()
+        observeCorrectLogin()
+    }
+
+    private fun registerUser() {
+        binding.tvRegisteration.setOnClickListener{
+            RegistrationFragment.navigate(this)
+        }
+    }
+    private fun observeCorrectLogin() {
+        logInViewModel.userFound.observe(viewLifecycleOwner){
+            if (it)
+                TODO("CORRECT LOGIN")
+        }
+    }
+
+    private fun resetError() = with(binding) {
+        tieLogin.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                logInViewModel.resetEmailError()
+                binding.tilLogin.error = null
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+        })
+        tiePassword.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                logInViewModel.resetPasswordError()
+                binding.tilPassword.error = null
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+        })
+    }
+
+    private fun observeError() = with(logInViewModel) {
+        isEmptyEmail.observe(viewLifecycleOwner) {
+            if (it)
+                binding.tilLogin.error = getString(R.string.mustntEmptyField)
+            else
+                binding.tilLogin.error = null
+        }
+        isIncorrectEmail.observe(viewLifecycleOwner) {
+            if (it)
+                binding.tilLogin.error = getString(R.string.incorrectEmail)
+            else
+                binding.tilLogin.error = null
+        }
+        isEmptyPassword.observe(viewLifecycleOwner) {
+            if (it)
+                binding.tilPassword.error = getString(R.string.mustntEmptyField)
+            else
+                binding.tilPassword.error = null
+        }
+        isIncorrectPassword.observe(viewLifecycleOwner) {
+            if (it)
+                binding.tilPassword.error = getString(R.string.incorrectPassword)
+            else
+                binding.tilPassword.error = null
+        }
+        userFound.observe(viewLifecycleOwner){
+            if (!it){
+                binding.tilLogin.error = getString(R.string.userNotFound)
+                binding.tilPassword.error = getString(R.string.userNotFound)
+            }
+        }
+    }
+
+    private fun initBtnLogin() {
+        with(binding) {
+            btnLogin.setOnClickListener {
+                val email = tieLogin.text.toString()
+                val password = tiePassword.text.toString()
+                logInViewModel.logInUser(email, password)
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    companion object{
+        fun navigate(fragment: Fragment){
+            fragment.findNavController().navigate(R.id.loginFragment,null, navOptions {
+                anim {
+                    enter = androidx.navigation.ui.R.anim.nav_default_enter_anim
+                    popEnter = androidx.navigation.ui.R.anim.nav_default_pop_enter_anim
+                }
+            })
         }
     }
 

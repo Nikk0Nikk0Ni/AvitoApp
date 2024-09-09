@@ -10,4 +10,11 @@
     <string name="name">Имя…</string>
     <string name="email">Email…</string>
     <string name="confirm_password">Подтверждение пароля…</string>
+    <string name="emailRegularPattern">^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$</string>
+    <string name="mustntEmptyField">Поле не должно быть пустым</string>
+    <string name="incorrectEmail">Некорректный email</string>
+    <string name="incorrectPassword">Ошибка, длинна пароля должна быть меньше 24 символов</string>
+    <string name="userNotFound">Пользователь не найден</string>
+    <string name="haventAccount">У меня нет аккаунта</string>
+    <string name="fragment_login_null">Fragment Login == null</string>
 </resources>
