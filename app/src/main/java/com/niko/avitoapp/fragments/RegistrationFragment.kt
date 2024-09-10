@@ -53,8 +53,18 @@ class RegistrationFragment : Fragment() {
         initButtonRegister()
         initLogInTV()
         observeError()
+        observeLoading()
         resetError()
         observeCorrectRegistration()
+    }
+
+    private fun observeLoading() {
+        registrationViewModel.loading.observe(viewLifecycleOwner){
+            if(it)
+                binding.regProgressBar.visibility = View.VISIBLE
+            else
+                binding.regProgressBar.visibility = View.GONE
+        }
     }
 
     private fun initLogInTV() {
@@ -66,7 +76,7 @@ class RegistrationFragment : Fragment() {
     private fun observeCorrectRegistration() {
         registrationViewModel.isSuccessfulRegistration.observe(viewLifecycleOwner) {
             if (it) {
-                TODO("ПЕРЕХОД НА ФРАГМЕНТ С ПРОДУКТАМИ")
+                ProductListFragment.navigate(this)
             }
         }
     }

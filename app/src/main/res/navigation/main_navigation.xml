@@ -3,20 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/productListFragment">
 
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.niko.avitoapp.fragments.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
-        <action
-            android:id="@+id/action_loginFragment_to_registrationFragment"
-            app:destination="@id/registrationFragment" />
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
         android:name="com.niko.avitoapp.fragments.RegistrationFragment"
         android:label="fragment_registration"
         tools:layout="@layout/fragment_registration" />
+    <fragment
+        android:id="@+id/productListFragment"
+        android:name="com.niko.avitoapp.fragments.ProductListFragment"
+        android:label="fragment_product_list"
+        tools:layout="@layout/fragment_product_list" />
 </navigation>

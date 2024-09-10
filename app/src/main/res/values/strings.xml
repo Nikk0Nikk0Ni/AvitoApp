@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">AvitoApp</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="login">Логин…</string>
     <string name="password">Пароль…</string>
@@ -22,4 +21,14 @@
     <string name="registration_error">Ошибка регистрации</string>
     <string name="have_already_account">У меня есть аккаунт</string>
     <string name="repeat_password">Повторите пароль…</string>
+    <string name="productlistfragment_null">ProductListFragment == null</string>
+    <string name="techincs">Техника</string>
+    <string name="bags_category_name">Сумки</string>
+    <string name="clothing_category_name">Одежда</string>
+    <string name="computers_category">computers</string>
+    <string name="bags_category">bags</string>
+    <string name="clothing_category">clothing</string>
+    <string name="short_string">%.30s…</string>
+    <string name="price_string">%s ₽</string>
+    <string name="all_products">Все товары</string>
 </resources>

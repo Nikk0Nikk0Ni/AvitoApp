@@ -39,6 +39,9 @@ class RegisterViewModel @Inject constructor(
     private val _isSuccessfulRegistration = MutableLiveData<Boolean>()
     val isSuccessfulRegistration: LiveData<Boolean>
         get() = _isSuccessfulRegistration
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean>
+        get() = _loading
 
     fun register(name: String, email: String, password: String, cPassword: String) {
         if (email.isBlank() || password.isBlank() || name.isBlank() || cPassword.isBlank()) {
@@ -59,7 +62,9 @@ class RegisterViewModel @Inject constructor(
             _isntSamePassword.value = true
         } else {
             viewModelScope.launch {
+                _loading.value = true
                 _isSuccessfulRegistration.value = registerUser(name, email, password, cPassword)
+                _loading.value = false
             }
         }
 

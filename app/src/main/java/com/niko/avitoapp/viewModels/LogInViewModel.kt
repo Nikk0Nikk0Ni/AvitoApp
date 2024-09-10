@@ -28,8 +28,11 @@ class LogInViewModel @Inject constructor(
     val isIncorrectPassword: LiveData<Boolean>
         get() = _isIncorrectPassword
     private val _userFound = MutableLiveData<Boolean>()
-    val userFound: MutableLiveData<Boolean>
+    val userFound: LiveData<Boolean>
         get() = _userFound
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean>
+        get() = _loading
 
     fun logInUser(email: String, password: String) {
         if (email.isBlank() || password.isBlank()) {
@@ -44,7 +47,9 @@ class LogInViewModel @Inject constructor(
                 _isIncorrectPassword.value = true
         } else{
             viewModelScope.launch {
+                _loading.value = true
                 _userFound.value = logInUseCase(email,password)
+                _loading.value = false
             }
         }
     }

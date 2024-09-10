@@ -11,4 +11,9 @@
         <item name="android:textSize">20sp</item>
     </style>
     <style name="Theme.AvitoApp" parent="Base.Theme.AvitoApp" />
+    <string-array name="sort_options">
+        <item>Не выбрано</item>
+        <item>Цена (от высокой к низкой)</item>
+        <item>Цена (от низкой к высокой)</item>
+    </string-array>
 </resources>

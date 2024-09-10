@@ -1,15 +1,15 @@
 package com.niko.avitoapp.fragments
 
 import android.content.Context
+import android.graphics.Paint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
@@ -17,10 +17,10 @@ import com.niko.avitoapp.R
 import com.niko.avitoapp.databinding.FragmentLoginBinding
 import com.niko.avitoapp.viewModels.LogInViewModel
 import com.niko.avitoapp.viewModelsFactory.FakeApiViewModelFactory
+import data.network.RetrofitClient
 import data.repository.FakeShopApiRepositoryImpl
 import di.FakeApiApplication
-import domain.usecases.LogInUser
-import domain.usecases.RegisterUser
+import domain.usecases.GetProductList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -58,25 +58,39 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initBtnLogin()
         initRegistrationTv()
+        observeLoading()
         observeError()
         resetError()
         observeCorrectLogin()
     }
 
+
+    private fun observeLoading() {
+        logInViewModel.loading.observe(viewLifecycleOwner) {
+            if (it)
+                binding.loginProgressBar.visibility = View.VISIBLE
+            else
+                binding.loginProgressBar.visibility = View.GONE
+        }
+    }
+
     private fun initRegistrationTv() {
-        binding.tvRegisteration.setOnClickListener{
+        binding.tvRegisteration.setOnClickListener {
             RegistrationFragment.navigate(this)
         }
     }
+
     private fun observeCorrectLogin() {
-        logInViewModel.userFound.observe(viewLifecycleOwner){
-            if (it)
-                TODO("CORRECT LOGIN")
+        logInViewModel.userFound.observe(viewLifecycleOwner) {
+            if (it) {
+                ProductListFragment.navigate(this)
+            }
+
         }
     }
 
     private fun resetError() = with(binding) {
-        tieLogin.addTextChangedListener(object: TextWatcher{
+        tieLogin.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
@@ -89,7 +103,7 @@ class LoginFragment : Fragment() {
             }
 
         })
-        tiePassword.addTextChangedListener(object : TextWatcher{
+        tiePassword.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
@@ -130,8 +144,8 @@ class LoginFragment : Fragment() {
             else
                 binding.tilPassword.error = null
         }
-        userFound.observe(viewLifecycleOwner){
-            if (!it){
+        userFound.observe(viewLifecycleOwner) {
+            if (!it) {
                 binding.tilLogin.error = getString(R.string.userNotFound)
                 binding.tilPassword.error = getString(R.string.userNotFound)
             }
@@ -153,16 +167,16 @@ class LoginFragment : Fragment() {
         _binding = null
     }
 
-    companion object{
-        fun navigate(fragment: Fragment){
-            fragment.findNavController().navigate(R.id.loginFragment,null, navOptions {
+    companion object {
+        fun navigate(fragment: Fragment) {
+            fragment.findNavController().navigate(R.id.loginFragment, null, navOptions {
                 anim {
                     enter = androidx.navigation.ui.R.anim.nav_default_enter_anim
                     popEnter = androidx.navigation.ui.R.anim.nav_default_pop_enter_anim
                     exit = androidx.navigation.ui.R.anim.nav_default_exit_anim
                     popExit = androidx.navigation.ui.R.anim.nav_default_pop_exit_anim
                 }
-                popUpTo(R.id.loginFragment){
+                popUpTo(R.id.loginFragment) {
                     inclusive = true
                 }
             })
