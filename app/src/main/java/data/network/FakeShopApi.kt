@@ -37,7 +37,7 @@ interface FakeShopApi {
 
     @GET("products")
     suspend fun sortByPriceCategoryProduct(
-        @Query("sort") price: String,
+        @Query("sort", encoded = true) price: String,
         @Query("category") category: String,
         @Query("page") page: Int,
         @Query("limit") limit: Int = DEFAULT_LIMIT
