@@ -1,5 +1,6 @@
 package data.repository
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import data.database.ProductsInfoDao
@@ -24,7 +25,8 @@ import javax.inject.Inject
 @ApplicationScope
 class FakeShopApiRepositoryImpl @Inject constructor(
     private val api: FakeShopApi,
-    private val productsDB: ProductsInfoDao
+    private val productsDB: ProductsInfoDao,
+    private val context: Context
 ) :
     FakeShopApiRepository {
     override suspend fun registerUser(
@@ -53,10 +55,24 @@ class FakeShopApiRepositoryImpl @Inject constructor(
     override suspend fun logInUser(email: String, password: String): Boolean {
         try {
             val response = api.logInUser(LogInUserRequest(email, password))
-            return response.status == LogInUserResponse.STATUS_SUCCESSFUL
+            return if (response.status == LogInUserResponse.STATUS_SUCCESSFUL){
+                response.token?.let {
+                    saveToken(it)
+                }
+                true
+            }else false
         } catch (e: Exception) {
             Log.e("AUF", "${e.message}")
             return false
+        }
+    }
+
+    private fun saveToken(token: String) {
+        val sharedPreference = context.getSharedPreferences("app_preference",Context.MODE_PRIVATE)
+        val editor = sharedPreference.edit()
+        editor.apply {
+            putString("auth_token",token)
+            apply()
         }
     }
 
@@ -118,5 +134,10 @@ class FakeShopApiRepositoryImpl @Inject constructor(
             Log.e("AUF", "${e.message}")
             Product()
         }
+    }
+
+    override fun isLoggedUser(): Boolean {
+        val sharedPreferences = context.getSharedPreferences("app_preference", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("auth_token", null) != null
     }
 }

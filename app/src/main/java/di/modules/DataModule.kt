@@ -21,8 +21,8 @@ interface DataModule{
     companion object{
         @ApplicationScope
         @Provides
-        fun provideFakeShopApi(): FakeShopApi{
-            return RetrofitClient.api
+        fun provideFakeShopApi(context: Context): FakeShopApi{
+            return RetrofitClient(context).api
         }
         @ApplicationScope
         @EmailPatternQualifier

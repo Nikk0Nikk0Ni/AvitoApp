@@ -55,7 +55,17 @@ class ProductDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeProductDetail()
+        observeLoading()
         initViewPager()
+    }
+
+    private fun observeLoading() {
+        productDetailViewModel.isLoading.observe(viewLifecycleOwner){
+            if(it)
+                binding.loadingProgressbar.visibility = View.VISIBLE
+            else
+                binding.loadingProgressbar.visibility = View.GONE
+        }
     }
 
     private fun observeProductDetail() {

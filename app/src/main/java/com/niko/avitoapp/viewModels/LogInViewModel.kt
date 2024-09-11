@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.niko.avitoapp.R
 import di.annotation.EmailPatternQualifier
+import domain.usecases.IsLoggedUser
 import domain.usecases.LogInUser
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -13,7 +14,8 @@ import javax.inject.Inject
 class LogInViewModel @Inject constructor(
     private val logInUseCase: LogInUser,
     @EmailPatternQualifier
-    private val emailPattern: String
+    private val emailPattern: String,
+    private val isLoggedUser: IsLoggedUser
 ) : ViewModel() {
     private val _isEmptyEmail = MutableLiveData<Boolean>()
     val isEmptyEmail: LiveData<Boolean>
@@ -67,6 +69,10 @@ class LogInViewModel @Inject constructor(
     private fun isValidEmail(email: String): Boolean {
         val regular = emailPattern.toRegex()
         return regular.matches(email)
+    }
+
+    fun isUserAlreadyLogged(): Boolean{
+        return isLoggedUser()
     }
 
     private fun isValidPassword(password: String) = password.length in 8..24

@@ -31,7 +31,6 @@ class LoginFragment : Fragment() {
     private val component by lazy {
         (requireActivity().application as FakeApiApplication).component
     }
-
     @Inject
     lateinit var viewModelFactory: FakeApiViewModelFactory
     private val logInViewModel by lazy {
@@ -44,6 +43,9 @@ class LoginFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         component.inject(this)
+        if(logInViewModel.isUserAlreadyLogged()){
+            ProductListFragment.navigate(this)
+        }
     }
 
     override fun onCreateView(
