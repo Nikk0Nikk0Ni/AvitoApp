@@ -6,6 +6,8 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Module
 import dagger.Provides
+import data.database.AppDatabase
+import data.database.ProductsInfoDao
 import data.network.FakeShopApi
 import data.network.RetrofitClient
 import data.repository.FakeShopApiRepositoryImpl
@@ -29,6 +31,11 @@ interface DataModule{
             return context.getString(R.string.emailRegularPattern)
         }
 
+        @ApplicationScope
+        @Provides
+        fun provideProductsInfoDao(context: Context): ProductsInfoDao{
+            return AppDatabase.getInstance(context).dao()
+        }
 
     }
 }

@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class ProductDetailResponse(
     @SerializedName("status")
     val status: String? = null,
-    @SerializedName("Data")
-    val data: List<Product> = listOf()
+    @SerializedName("data")
+    val data: Product
 ) {
     companion object {
         const val STATUS_SUCCESSFUL = "success"

@@ -19,5 +19,5 @@ interface FakeShopApiRepository {
     suspend fun sortByPriceCategoryProduct(sort: String, category: String,page: Int): ProductsResponse
     suspend fun sortByPriceProduct(sort: String,page: Int): ProductsResponse
     suspend fun getProductListByCategory(category: String, page: Int): ProductsResponse
-    suspend fun getProductDetail(id: String): ProductDetailResponse
+    suspend fun getProductDetail(id: String): Product
 }

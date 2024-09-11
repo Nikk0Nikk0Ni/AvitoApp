@@ -2,12 +2,14 @@ package data.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import data.database.ProductsInfoDao
 import data.network.FakeShopApi
 import data.network.RetrofitClient
 import di.annotation.ApplicationScope
 import domain.models.AuthUserResponse
 import domain.models.LogInUserRequest
 import domain.models.LogInUserResponse
+import domain.models.Product
 import domain.models.ProductDetailResponse
 import domain.models.ProductsResponse
 import domain.models.RegisterAddressRequest
@@ -20,7 +22,10 @@ import retrofit2.Response
 import javax.inject.Inject
 
 @ApplicationScope
-class FakeShopApiRepositoryImpl @Inject constructor(private val api: FakeShopApi) :
+class FakeShopApiRepositoryImpl @Inject constructor(
+    private val api: FakeShopApi,
+    private val productsDB: ProductsInfoDao
+) :
     FakeShopApiRepository {
     override suspend fun registerUser(
         name: String,
@@ -65,9 +70,13 @@ class FakeShopApiRepositoryImpl @Inject constructor(private val api: FakeShopApi
 
     }
 
-    override suspend fun sortByPriceCategoryProduct(sort: String, category:String,page: Int): ProductsResponse {
+    override suspend fun sortByPriceCategoryProduct(
+        sort: String,
+        category: String,
+        page: Int
+    ): ProductsResponse {
         return try {
-            api.sortByPriceCategoryProduct(sort,category ,page)
+            api.sortByPriceCategoryProduct(sort, category, page)
         } catch (e: Exception) {
             Log.e("AUF", "${e.message}")
             ProductsResponse()
@@ -76,7 +85,7 @@ class FakeShopApiRepositoryImpl @Inject constructor(private val api: FakeShopApi
 
     override suspend fun sortByPriceProduct(sort: String, page: Int): ProductsResponse {
         return try {
-            api.sortByPriceProduct(sort ,page)
+            api.sortByPriceProduct(sort, page)
         } catch (e: Exception) {
             Log.e("AUF", "${e.message}")
             ProductsResponse()
@@ -92,12 +101,22 @@ class FakeShopApiRepositoryImpl @Inject constructor(private val api: FakeShopApi
         }
     }
 
-    override suspend fun getProductDetail(id: String): ProductDetailResponse {
-        return try{
-            api.getProductDetail(id)
-        }catch (e: Exception){
+    override suspend fun getProductDetail(id: String): Product {
+        return try {
+            if (productsDB.existsById(id) == 1) {
+                productsDB.getProductInfo(id)
+            }
+            else {
+                val productResponse = api.getProductDetail(id)
+                if (productResponse.status == ProductDetailResponse.STATUS_SUCCESSFUL) {
+                    productsDB.insertProductInfo(productResponse.data)
+                    productsDB.getProductInfo(id)
+                }else
+                    Product()
+            }
+        } catch (e: Exception) {
             Log.e("AUF", "${e.message}")
-            ProductDetailResponse()
+            Product()
         }
     }
 }

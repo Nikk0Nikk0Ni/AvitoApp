@@ -50,7 +50,7 @@ interface FakeShopApi {
         @Query("limit") limit: Int = DEFAULT_LIMIT
     ): ProductsResponse
 
-    @GET("/products/{id}")
+    @GET("products/{id}")
     suspend fun getProductDetail(
         @Path("id") id: String
     ): ProductDetailResponse

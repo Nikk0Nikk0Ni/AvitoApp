@@ -57,7 +57,7 @@ class ProductsAdapter @Inject constructor() : ListAdapter<Product, ProductHolder
         }
         holder.newPrice.text = String.format(holder.view.context.getString(R.string.price_string),newPrice.toString())
         holder.itemView.setOnClickListener {
-            getDetailInfo?.let { getInfo -> getInfo(getItem(position).images.toString()) }
+            getDetailInfo?.let { getInfo -> getInfo(getItem(position).id) }
         }
         if (currentList.size-10 == position)
             uploadData?.let { it() }

@@ -160,8 +160,7 @@ class ProductListFragment : Fragment() {
 
     private fun setProductAdapterSettings() {
         productsAdapter.getDetailInfo = {
-            TODO("DETAIL")
-            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            ProductDetailFragment.navigate(this,it)
         }
         productsAdapter.uploadData = {
             if(productViewModel.isSortedList){

@@ -2,6 +2,7 @@ package di.modules
 
 import androidx.lifecycle.ViewModel
 import com.niko.avitoapp.viewModels.LogInViewModel
+import com.niko.avitoapp.viewModels.ProductDetailViewModel
 import com.niko.avitoapp.viewModels.ProductsViewModel
 import com.niko.avitoapp.viewModels.RegisterViewModel
 import dagger.Binds
@@ -25,4 +26,9 @@ interface ViewModelsModule {
     @ViewModelKey(ProductsViewModel::class)
     @Binds
     fun bindProductViewModel(viewModel: ProductsViewModel): ViewModel
+
+//    @IntoMap
+//    @ViewModelKey(ProductDetailViewModel::class)
+//    @Binds
+//    fun bindProductDetailViewModel(viewModel: ProductDetailViewModel): ViewModel
 }
