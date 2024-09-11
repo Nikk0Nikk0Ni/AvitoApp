@@ -103,7 +103,7 @@ class FakeShopApiRepositoryImpl @Inject constructor(
         return try {
             mapper.mapProductsResponseDTOToProductsResponse(api.sortByPriceProduct(sort, page))
         } catch (e: Exception) {
-            Log.e("AUF", "${e.message}")
+            Log.e("AUF", "${ e.message }")
             ProductsResponse()
         }
     }
