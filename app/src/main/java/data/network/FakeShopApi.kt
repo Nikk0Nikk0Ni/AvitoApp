@@ -1,6 +1,10 @@
 package data.network
 
 import androidx.lifecycle.LiveData
+import data.models.LogInUserResponseDTO
+import data.models.ProductDetailResponseDTO
+import data.models.ProductsResponseDTO
+import data.models.RegisterResponseDTO
 import domain.models.LogInUserRequest
 import domain.models.LogInUserResponse
 import domain.models.Product
@@ -17,23 +21,23 @@ import retrofit2.http.Query
 
 interface FakeShopApi {
     @POST("users")
-    suspend fun addUser(@Body user: RegisterUserRequest): RegisterResponse
+    suspend fun addUser(@Body user: RegisterUserRequest): RegisterResponseDTO
 
     @POST("users/auth/login")
-    suspend fun logInUser(@Body user: LogInUserRequest): LogInUserResponse
+    suspend fun logInUser(@Body user: LogInUserRequest): LogInUserResponseDTO
 
     @GET("products")
     suspend fun getProducts(
         @Query("page") page: Int,
         @Query("limit") limit: Int = DEFAULT_LIMIT
-    ): ProductsResponse
+    ): ProductsResponseDTO
 
     @GET("products")
     suspend fun getProductsByCategory(
         @Query("category") category: String,
         @Query("page") page: Int,
         @Query("limit") limit: Int = DEFAULT_LIMIT
-    ): ProductsResponse
+    ): ProductsResponseDTO
 
     @GET("products")
     suspend fun sortByPriceCategoryProduct(
@@ -41,19 +45,19 @@ interface FakeShopApi {
         @Query("category") category: String,
         @Query("page") page: Int,
         @Query("limit") limit: Int = DEFAULT_LIMIT
-    ): ProductsResponse
+    ): ProductsResponseDTO
 
     @GET("products")
     suspend fun sortByPriceProduct(
         @Query("sort", encoded = true) price: String,
         @Query("page") page: Int,
         @Query("limit") limit: Int = DEFAULT_LIMIT
-    ): ProductsResponse
+    ): ProductsResponseDTO
 
     @GET("products/{id}")
     suspend fun getProductDetail(
         @Path("id") id: String
-    ): ProductDetailResponse
+    ): ProductDetailResponseDTO
 
     companion object {
         private const val DEFAULT_LIMIT = 30

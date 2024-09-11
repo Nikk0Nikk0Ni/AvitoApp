@@ -2,10 +2,13 @@ package data.repository
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LiveData
 import data.database.ProductsInfoDao
+import data.mappers.FakeApiDataMapper
+import data.models.AuthUserResponseDTO
+import data.models.LogInUserResponseDTO
+import data.models.ProductDTO
+import data.models.ProductDetailResponseDTO
 import data.network.FakeShopApi
-import data.network.RetrofitClient
 import di.annotation.ApplicationScope
 import domain.models.AuthUserResponse
 import domain.models.LogInUserRequest
@@ -14,19 +17,16 @@ import domain.models.Product
 import domain.models.ProductDetailResponse
 import domain.models.ProductsResponse
 import domain.models.RegisterAddressRequest
-import domain.models.RegisterResponse
 import domain.models.RegisterUserRequest
 import domain.repository.FakeShopApiRepository
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import javax.inject.Inject
 
 @ApplicationScope
 class FakeShopApiRepositoryImpl @Inject constructor(
     private val api: FakeShopApi,
     private val productsDB: ProductsInfoDao,
-    private val context: Context
+    private val context: Context,
+    private val mapper: FakeApiDataMapper
 ) :
     FakeShopApiRepository {
     override suspend fun registerUser(
@@ -45,7 +45,7 @@ class FakeShopApiRepositoryImpl @Inject constructor(
                     address = RegisterAddressRequest()
                 )
             )
-            return response.status == AuthUserResponse.STATUS_SUCCESSFUL
+            return response.status == AuthUserResponseDTO.STATUS_SUCCESSFUL
         } catch (e: Exception) {
             Log.e("AUF", "Error: ${e.message}")
             return false
@@ -55,7 +55,7 @@ class FakeShopApiRepositoryImpl @Inject constructor(
     override suspend fun logInUser(email: String, password: String): Boolean {
         try {
             val response = api.logInUser(LogInUserRequest(email, password))
-            return if (response.status == LogInUserResponse.STATUS_SUCCESSFUL){
+            return if (response.status == LogInUserResponseDTO.STATUS_SUCCESSFUL){
                 response.token?.let {
                     saveToken(it)
                 }
@@ -78,7 +78,7 @@ class FakeShopApiRepositoryImpl @Inject constructor(
 
     override suspend fun getProductList(page: Int): ProductsResponse {
         return try {
-            api.getProducts(page)
+            mapper.mapProductsResponseDTOToProductsResponse(api.getProducts(page))
         } catch (e: Exception) {
             Log.e("AUF", "${e.message}")
             ProductsResponse()
@@ -92,7 +92,7 @@ class FakeShopApiRepositoryImpl @Inject constructor(
         page: Int
     ): ProductsResponse {
         return try {
-            api.sortByPriceCategoryProduct(sort, category, page)
+            mapper.mapProductsResponseDTOToProductsResponse(api.sortByPriceCategoryProduct(sort, category, page))
         } catch (e: Exception) {
             Log.e("AUF", "${e.message}")
             ProductsResponse()
@@ -101,7 +101,7 @@ class FakeShopApiRepositoryImpl @Inject constructor(
 
     override suspend fun sortByPriceProduct(sort: String, page: Int): ProductsResponse {
         return try {
-            api.sortByPriceProduct(sort, page)
+            mapper.mapProductsResponseDTOToProductsResponse(api.sortByPriceProduct(sort, page))
         } catch (e: Exception) {
             Log.e("AUF", "${e.message}")
             ProductsResponse()
@@ -110,7 +110,7 @@ class FakeShopApiRepositoryImpl @Inject constructor(
 
     override suspend fun getProductListByCategory(category: String, page: Int): ProductsResponse {
         return try {
-            api.getProductsByCategory(category, page)
+            mapper.mapProductsResponseDTOToProductsResponse(api.getProductsByCategory(category, page))
         } catch (e: Exception) {
             Log.e("AUF", "${e.message}")
             ProductsResponse()
@@ -119,14 +119,14 @@ class FakeShopApiRepositoryImpl @Inject constructor(
 
     override suspend fun getProductDetail(id: String): Product {
         return try {
-            if (productsDB.existsById(id) == 1) {
-                productsDB.getProductInfo(id)
+            if (productsDB.existsById(id) == ProductsInfoDao.SINGLE_PRODUCT ) {
+                mapper.mapProductDTOPToProduct(productsDB.getProductInfo(id))
             }
             else {
                 val productResponse = api.getProductDetail(id)
-                if (productResponse.status == ProductDetailResponse.STATUS_SUCCESSFUL) {
+                if (productResponse.status == ProductDetailResponseDTO.STATUS_SUCCESSFUL) {
                     productsDB.insertProductInfo(productResponse.data)
-                    productsDB.getProductInfo(id)
+                    mapper.mapProductDTOPToProduct(productsDB.getProductInfo(id))
                 }else
                     Product()
             }

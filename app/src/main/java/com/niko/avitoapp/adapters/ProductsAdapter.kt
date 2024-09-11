@@ -8,20 +8,21 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.niko.avitoapp.R
 import com.niko.avitoapp.holders.ProductHolder
+import com.niko.avitoapp.models.ProductUiModel
 import com.squareup.picasso.Picasso
 import domain.models.Product
 import javax.inject.Inject
 
-class ProductsAdapter @Inject constructor() : ListAdapter<Product, ProductHolder>(Comparator()) {
+class ProductsAdapter @Inject constructor() : ListAdapter<ProductUiModel, ProductHolder>(Comparator()) {
     var getDetailInfo: ((id: String) -> Unit)? = null
     var uploadData: (() -> Unit)? = null
 
-    class Comparator : DiffUtil.ItemCallback<Product>() {
-        override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
+    class Comparator : DiffUtil.ItemCallback<ProductUiModel>() {
+        override fun areItemsTheSame(oldItem: ProductUiModel, newItem: ProductUiModel): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
+        override fun areContentsTheSame(oldItem: ProductUiModel, newItem: ProductUiModel): Boolean {
             return oldItem == newItem
         }
 

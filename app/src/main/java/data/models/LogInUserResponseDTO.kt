@@ -1,9 +1,11 @@
-package domain.models
+package data.models
 
 import com.google.gson.annotations.SerializedName
 
-data class LogInUserResponse(
+data class LogInUserResponseDTO(
+    @SerializedName("status")
     val status: String? = null,
+    @SerializedName("token")
     val token: String? = null
 ){
     companion object{

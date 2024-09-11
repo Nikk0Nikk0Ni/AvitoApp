@@ -41,6 +41,7 @@ class ProductDetailFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         component.inject(this)
+        Log.e("AUF", requireArguments().getString(ID, Product.INCORRECT_ID))
         productDetailViewModel.getDetail()
     }
 

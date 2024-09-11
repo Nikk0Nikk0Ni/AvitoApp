@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.niko.avitoapp.mappers.FakeApiPresMapper
+import com.niko.avitoapp.models.ProductUiModel
 import data.network.FakeShopApi
 import domain.models.Product
 import domain.models.ProductsResponse
@@ -19,10 +21,11 @@ class ProductsViewModel @Inject constructor(
     private val getProductList: GetProductList,
     private val getProductListByCategory: GetProductListByCategory,
     private val sortByPriceCategoryProduct: SortByPriceCategoryProduct,
-    private val sortByPriceProduct: SortByPriceProduct
+    private val sortByPriceProduct: SortByPriceProduct,
+    private val mapper: FakeApiPresMapper
 ) : ViewModel() {
-    private val _productList = MutableLiveData<List<Product>>()
-    val productList: LiveData<List<Product>>
+    private val _productList = MutableLiveData<List<ProductUiModel>>()
+    val productList: LiveData<List<ProductUiModel>>
         get() = _productList
     private val _isError = MutableLiveData<Boolean>()
     val isError: LiveData<Boolean>
@@ -71,7 +74,7 @@ class ProductsViewModel @Inject constructor(
         if (category == null) {
             viewModelScope.launch {
                 _loading.value = true
-                val productResponse = getProductList(page)
+                val productResponse = mapper.mapProductResponseToProductResponseUiModel(getProductList(page))
                 if (productResponse.status == ProductsResponse.STATUS_SUCCESSFUL) {
                     val list = productList.value?.toMutableList() ?: mutableListOf()
                     list.addAll(productResponse.data)
@@ -89,7 +92,7 @@ class ProductsViewModel @Inject constructor(
             }
             viewModelScope.launch {
                 _loading.value = true
-                val productResponse = getProductListByCategory(category, page)
+                val productResponse = mapper.mapProductResponseToProductResponseUiModel(getProductListByCategory(category, page))
                 if (productResponse.status == ProductsResponse.STATUS_SUCCESSFUL) {
                     val list = productList.value?.toMutableList() ?: mutableListOf()
                     list.addAll(productResponse.data)
@@ -108,7 +111,7 @@ class ProductsViewModel @Inject constructor(
         if (category == null) {
             viewModelScope.launch {
                 _loading.value = true
-                val productResponse = sortByPriceProduct(sortType,page)
+                val productResponse = mapper.mapProductResponseToProductResponseUiModel(sortByPriceProduct(sortType,page))
                 if (productResponse.status == ProductsResponse.STATUS_SUCCESSFUL) {
                     val list = productList.value?.toMutableList() ?: mutableListOf()
                     list.addAll(productResponse.data)
@@ -121,7 +124,7 @@ class ProductsViewModel @Inject constructor(
         }else{
             viewModelScope.launch {
                 _loading.value = true
-                val productResponse = sortByPriceCategoryProduct(sortType,category,page)
+                val productResponse = mapper.mapProductResponseToProductResponseUiModel(sortByPriceCategoryProduct(sortType,category,page))
                 if (productResponse.status == ProductsResponse.STATUS_SUCCESSFUL) {
                     val list = productList.value?.toMutableList() ?: mutableListOf()
                     list.addAll(productResponse.data)

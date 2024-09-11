@@ -1,13 +1,15 @@
-package domain.models
+package data.models
 
 import com.google.gson.annotations.SerializedName
 
-data class ProductsResponse(
+data class ProductDetailResponseDTO(
+    @SerializedName("status")
     val status: String? = null,
-    val count: Int? = null,
-    val data: List<Product> = listOf()
+    @SerializedName("data")
+    val data: ProductDTO
 ) {
     companion object {
         const val STATUS_SUCCESSFUL = "success"
     }
 }
+

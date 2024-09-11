@@ -5,9 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import domain.models.Product
+import data.models.ProductDTO
 
-@Database(entities = [Product::class], version = 1)
+@Database(entities = [ProductDTO::class], version = 2)
 @TypeConverters(Converter::class)
 abstract class AppDatabase(): RoomDatabase() {
     abstract fun dao(): ProductsInfoDao
