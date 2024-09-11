@@ -92,28 +92,29 @@ class ProductListFragment : Fragment() {
                 val selectedItem = p0?.getItemAtPosition(p2) as String
                 val sortOptions = resources.getStringArray(R.array.sort_options)
                 when (selectedItem) {
-                    sortOptions[0] ->{
+                    sortOptions[0] -> {
                         productViewModel.resetIsSortedList()
                         productViewModel.resetPage()
                         productViewModel.resetAllProducts()
-                        if(productViewModel.currentCategory != null){
+                        if (productViewModel.currentCategory != null) {
                             productViewModel.currentCategory?.let {
                                 productViewModel.getProductList(it)
                             }
-                        }else{
+                        } else {
                             productViewModel.getProductList()
                         }
                     }
+
                     sortOptions[1] -> {
                         productViewModel.setIsSortedListTrue()
                         productViewModel.setMaxToMinSortType()
                         productViewModel.resetPage()
                         productViewModel.resetAllProducts()
-                        if(productViewModel.currentCategory != null){
+                        if (productViewModel.currentCategory != null) {
                             productViewModel.currentCategory?.let {
                                 productViewModel.getSortedProductList(it)
                             }
-                        }else
+                        } else
                             productViewModel.getSortedProductList()
                     }
 
@@ -122,11 +123,11 @@ class ProductListFragment : Fragment() {
                         productViewModel.setMinToMaxType()
                         productViewModel.resetPage()
                         productViewModel.resetAllProducts()
-                        if(productViewModel.currentCategory != null){
+                        if (productViewModel.currentCategory != null) {
                             productViewModel.currentCategory?.let {
                                 productViewModel.getSortedProductList(it)
                             }
-                        }else
+                        } else
                             productViewModel.getSortedProductList()
                     }
                 }
@@ -160,23 +161,25 @@ class ProductListFragment : Fragment() {
 
     private fun setProductAdapterSettings() {
         productsAdapter.getDetailInfo = {
-            ProductDetailFragment.navigate(this,it)
+            if (isOnePainMode())
+                launchFullDetailFragment(it)
+            else
+                launchShortDetailFragment(it)
         }
         productsAdapter.uploadData = {
-            if(productViewModel.isSortedList){
+            if (productViewModel.isSortedList) {
                 if (productViewModel.currentCategory == null)
                     productViewModel.getSortedProductList()
                 else {
-                    productViewModel.currentCategory?.let{
+                    productViewModel.currentCategory?.let {
                         productViewModel.getSortedProductList(it)
                     }
                 }
-            }
-            else{
+            } else {
                 if (productViewModel.currentCategory == null)
                     productViewModel.getProductList()
                 else {
-                    productViewModel.currentCategory?.let{
+                    productViewModel.currentCategory?.let {
                         productViewModel.getProductList(it)
                     }
                 }
@@ -184,6 +187,17 @@ class ProductListFragment : Fragment() {
 
         }
     }
+
+    private fun launchShortDetailFragment(id: String) {
+        childFragmentManager.popBackStack()
+        childFragmentManager.beginTransaction().replace(R.id.fragmentContainerDetail,ProductDetailFragment.newInstance(id)).addToBackStack(null).commit()
+    }
+
+    private fun launchFullDetailFragment(id: String) {
+        ProductDetailFragment.navigate(this, id)
+    }
+
+    private fun isOnePainMode(): Boolean = binding.fragmentContainerDetail == null
 
     private fun initCategoryRecView() {
         binding.recViewCategory.layoutManager =
@@ -195,7 +209,7 @@ class ProductListFragment : Fragment() {
     private fun setCategoryAdapterSettings() {
         categoryAdapter.submitList(categoryList)
         categoryAdapter.onCategoryClick = {
-            if(productViewModel.isSortedList){
+            if (productViewModel.isSortedList) {
                 productViewModel.resetPage()
                 productViewModel.resetAllProducts()
                 if (it != null) {
@@ -204,8 +218,7 @@ class ProductListFragment : Fragment() {
                     productViewModel.resetCategory()
                     productViewModel.getSortedProductList()
                 }
-            }
-            else{
+            } else {
                 productViewModel.resetAllProducts()
                 productViewModel.resetPage()
                 if (it != null) {

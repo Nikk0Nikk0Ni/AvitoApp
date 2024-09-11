@@ -126,6 +126,11 @@ class ProductDetailFragment : Fragment() {
 
     companion object {
         private const val ID = "id"
+        fun newInstance(id: String): Fragment{
+            return ProductDetailFragment().apply {
+                arguments = bundleOf(ID to id)
+            }
+        }
         fun navigate(fragment: Fragment, id: String) {
             fragment.findNavController()
                 .navigate(R.id.productDetailFragment, bundleOf(ID to id), navOptions {

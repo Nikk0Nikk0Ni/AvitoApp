@@ -10,7 +10,7 @@
     <Spinner
         android:id="@+id/sort_spinner"
         android:layout_width="0dp"
-        android:layout_height="35dp"
+        android:layout_height="48dp"
         android:layout_margin="16dp"
         android:background="@drawable/custom_spinner"
         android:entries="@array/sort_options"
