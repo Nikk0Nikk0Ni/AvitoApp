@@ -42,6 +42,9 @@ class RegisterViewModel @Inject constructor(
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean>
         get() = _loading
+    private val _isError = MutableLiveData<Boolean>()
+    val isError: LiveData<Boolean>
+        get() = _isError
 
     fun register(name: String, email: String, password: String, cPassword: String) {
         if (email.isBlank() || password.isBlank() || name.isBlank() || cPassword.isBlank()) {
@@ -63,7 +66,9 @@ class RegisterViewModel @Inject constructor(
         } else {
             viewModelScope.launch {
                 _loading.value = true
-                _isSuccessfulRegistration.value = registerUser(name, email, password, cPassword)
+                _isSuccessfulRegistration.value = registerUser(name, email, password, cPassword){
+                    _isError.value = true
+                }
                 _loading.value = false
             }
         }
@@ -87,6 +92,10 @@ class RegisterViewModel @Inject constructor(
 
     fun resetNameError(){
         _isEmptyName.value = false
+    }
+
+    fun resetIsError(){
+        _isError.value = false
     }
 
     private fun isValidEmail(email: String): Boolean {

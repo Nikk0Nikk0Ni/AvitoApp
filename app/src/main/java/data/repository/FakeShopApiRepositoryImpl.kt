@@ -6,15 +6,11 @@ import data.database.ProductsInfoDao
 import data.mappers.FakeApiDataMapper
 import data.models.AuthUserResponseDTO
 import data.models.LogInUserResponseDTO
-import data.models.ProductDTO
 import data.models.ProductDetailResponseDTO
 import data.network.FakeShopApi
 import di.annotation.ApplicationScope
-import domain.models.AuthUserResponse
 import domain.models.LogInUserRequest
-import domain.models.LogInUserResponse
 import domain.models.Product
-import domain.models.ProductDetailResponse
 import domain.models.ProductsResponse
 import domain.models.RegisterAddressRequest
 import domain.models.RegisterUserRequest
@@ -34,6 +30,7 @@ class FakeShopApiRepositoryImpl @Inject constructor(
         email: String,
         password: String,
         cpassword: String,
+        callbackError: (()->Unit)
     ): Boolean {
         try {
             val response = api.addUser(
@@ -47,12 +44,12 @@ class FakeShopApiRepositoryImpl @Inject constructor(
             )
             return response.status == AuthUserResponseDTO.STATUS_SUCCESSFUL
         } catch (e: Exception) {
-            Log.e("AUF", "Error: ${e.message}")
+            callbackError()
             return false
         }
     }
 
-    override suspend fun logInUser(email: String, password: String): Boolean {
+    override suspend fun logInUser(email: String, password: String,callbackError: (()->Unit)): Boolean {
         try {
             val response = api.logInUser(LogInUserRequest(email, password))
             return if (response.status == LogInUserResponseDTO.STATUS_SUCCESSFUL){
@@ -62,7 +59,7 @@ class FakeShopApiRepositoryImpl @Inject constructor(
                 true
             }else false
         } catch (e: Exception) {
-            Log.e("AUF", "${e.message}")
+            callbackError()
             return false
         }
     }
@@ -80,7 +77,6 @@ class FakeShopApiRepositoryImpl @Inject constructor(
         return try {
             mapper.mapProductsResponseDTOToProductsResponse(api.getProducts(page))
         } catch (e: Exception) {
-            Log.e("AUF", "${e.message}")
             ProductsResponse()
         }
 
@@ -94,7 +90,6 @@ class FakeShopApiRepositoryImpl @Inject constructor(
         return try {
             mapper.mapProductsResponseDTOToProductsResponse(api.sortByPriceCategoryProduct(sort, category, page))
         } catch (e: Exception) {
-            Log.e("AUF", "${e.message}")
             ProductsResponse()
         }
     }
@@ -103,7 +98,6 @@ class FakeShopApiRepositoryImpl @Inject constructor(
         return try {
             mapper.mapProductsResponseDTOToProductsResponse(api.sortByPriceProduct(sort, page))
         } catch (e: Exception) {
-            Log.e("AUF", "${ e.message }")
             ProductsResponse()
         }
     }
@@ -112,12 +106,11 @@ class FakeShopApiRepositoryImpl @Inject constructor(
         return try {
             mapper.mapProductsResponseDTOToProductsResponse(api.getProductsByCategory(category, page))
         } catch (e: Exception) {
-            Log.e("AUF", "${e.message}")
             ProductsResponse()
         }
     }
 
-    override suspend fun getProductDetail(id: String): Product {
+    override suspend fun getProductDetail(id: String, callback: () -> Unit): Product {
         return try {
             if (productsDB.existsById(id) == ProductsInfoDao.SINGLE_PRODUCT ) {
                 mapper.mapProductDTOPToProduct(productsDB.getProductInfo(id))
@@ -127,11 +120,13 @@ class FakeShopApiRepositoryImpl @Inject constructor(
                 if (productResponse.status == ProductDetailResponseDTO.STATUS_SUCCESSFUL) {
                     productsDB.insertProductInfo(productResponse.data)
                     mapper.mapProductDTOPToProduct(productsDB.getProductInfo(id))
-                }else
+                }else{
+                    callback()
                     Product()
+                }
             }
         } catch (e: Exception) {
-            Log.e("AUF", "${e.message}")
+            callback()
             Product()
         }
     }

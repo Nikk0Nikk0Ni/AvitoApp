@@ -58,6 +58,7 @@ class ProductListFragment : Fragment() {
             )
         )
     }
+    private var isFirstSelected = true
     private val component by lazy {
         (requireActivity().application as FakeApiApplication).component
     }
@@ -81,14 +82,45 @@ class ProductListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initCategoryRecView()
         observeProductsList()
+        observeError()
+        resetError()
         initSortedSpinner()
         observeLoadingProductsList()
         initProductRecView()
+        loadInitialData()
+    }
+
+    private fun loadInitialData() {
+        if (productViewModel.productList.value.isNullOrEmpty()) {
+            productViewModel.getProductList()
+        }
+    }
+
+    private fun resetError() {
+        binding.btnRetry.setOnClickListener{
+            productViewModel.resetIsSortedList()
+            productViewModel.resetAllProducts()
+            productViewModel.resetPage()
+            productViewModel.resetCategory()
+            productViewModel.getProductList()
+            binding.layoutError.visibility = View.GONE
+        }
+    }
+
+    private fun observeError() {
+        productViewModel.isError.observe(viewLifecycleOwner){
+            if (it)
+                binding.layoutError.visibility = View.VISIBLE
+        }
     }
 
     private fun initSortedSpinner() {
         binding.sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                if (isFirstSelected) {
+                    isFirstSelected = false
+                    return
+                }
                 val selectedItem = p0?.getItemAtPosition(p2) as String
                 val sortOptions = resources.getStringArray(R.array.sort_options)
                 when (selectedItem) {

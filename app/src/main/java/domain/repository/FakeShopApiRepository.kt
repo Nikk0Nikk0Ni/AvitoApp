@@ -11,14 +11,15 @@ interface FakeShopApiRepository {
         name: String,
         email: String,
         password: String,
-        cpassword: String
+        cpassword: String,
+        callbackError: (()->Unit)
     ): Boolean
 
-    suspend fun logInUser(email: String, password: String): Boolean
+    suspend fun logInUser(email: String, password: String,callbackError: (()->Unit)): Boolean
     suspend fun getProductList(page: Int): ProductsResponse
     suspend fun sortByPriceCategoryProduct(sort: String, category: String,page: Int): ProductsResponse
     suspend fun sortByPriceProduct(sort: String,page: Int): ProductsResponse
     suspend fun getProductListByCategory(category: String, page: Int): ProductsResponse
-    suspend fun getProductDetail(id: String): Product
+    suspend fun getProductDetail(id: String,callback: (()->Unit)): Product
     fun isLoggedUser(): Boolean
 }

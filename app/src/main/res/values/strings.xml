@@ -29,12 +29,14 @@
     <string name="bags_category">bags</string>
     <string name="clothing_category">clothing</string>
     <string name="short_string">%.30s…</string>
-    <string name="price_string">%s ₽</string>
-    <string name="old_price">Старая цена: %s ₽</string>
-    <string name="new_pirce">Новая цена: %s ₽</string>
-    <string name="price">Цена: %s ₽</string>
+    <string name="price_string">%d ₽</string>
+    <string name="old_price">Старая цена: %d ₽</string>
+    <string name="new_pirce">Новая цена: %d ₽</string>
+    <string name="price">Цена: %d₽</string>
     <string name="all_products">Все товары</string>
     <string name="product_category">Категория(-и) товара: %s</string>
     <string name="product_description">Описание: %s</string>
     <string name="product_name">%s</string>
+    <string name="retry_response">Попробовать еще раз</string>
+    <string name="response_error_text">Ошибка отправки запроса</string>
 </resources>

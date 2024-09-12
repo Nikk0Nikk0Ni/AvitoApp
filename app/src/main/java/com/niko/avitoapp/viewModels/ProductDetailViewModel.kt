@@ -25,11 +25,20 @@ class ProductDetailViewModel @Inject constructor(
     private val _product = MutableLiveData<ProductUiModel>()
     val product : LiveData<ProductUiModel>
         get() = _product
+    private val _isError = MutableLiveData<Boolean>()
+    val isError: LiveData<Boolean>
+        get() = _isError
     fun getDetail(){
         viewModelScope.launch {
             _isLoading.value = true
-            _product.value = mapper.mapProductToProductUiModel(getProductDetail(productId))
+            _product.value = mapper.mapProductToProductUiModel(getProductDetail(productId){
+                _isError.value = true
+            })
             _isLoading.value = false
         }
+    }
+
+    fun resetIsError(){
+        _isError.value = false
     }
 }

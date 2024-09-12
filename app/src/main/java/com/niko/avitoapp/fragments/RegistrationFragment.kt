@@ -127,6 +127,14 @@ class RegistrationFragment : Fragment() {
             }
 
         })
+        btnRetry.setOnClickListener{
+            registrationViewModel.resetIsError()
+            tilName.error = null
+            tilEmail.error = null
+            tilPassword.error = null
+            tilConfirmPassword.error = null
+            layoutError.visibility = View.GONE
+        }
     }
 
     private fun observeError() = with(registrationViewModel) {
@@ -169,19 +177,17 @@ class RegistrationFragment : Fragment() {
                 binding.tilConfirmPassword.error = null
             }
         }
-        isSuccessfulRegistration.observe(viewLifecycleOwner) {
-            if (!it) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.registration_error), Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
         isEmptyCPassword.observe(viewLifecycleOwner) {
             if (it)
                 binding.tilConfirmPassword.error = getString(R.string.mustntEmptyField)
             else
                 binding.tilConfirmPassword.error = null
+        }
+        isError.observe(viewLifecycleOwner){
+            if (it) {
+                Toast.makeText(requireContext(),getString(R.string.registration_error),Toast.LENGTH_SHORT).show()
+                binding.layoutError.visibility = View.VISIBLE
+            }
         }
     }
 

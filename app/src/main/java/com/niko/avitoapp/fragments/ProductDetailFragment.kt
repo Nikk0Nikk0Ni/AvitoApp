@@ -41,7 +41,6 @@ class ProductDetailFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         component.inject(this)
-        Log.e("AUF", requireArguments().getString(ID, Product.INCORRECT_ID))
         productDetailViewModel.getDetail()
     }
 
@@ -57,8 +56,28 @@ class ProductDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observeProductDetail()
         observeLoading()
+        observeError()
+        resetError()
         initViewPager()
     }
+
+
+    private fun resetError() {
+        binding.btnRetry.setOnClickListener{
+            productDetailViewModel.resetIsError()
+            productDetailViewModel.getDetail()
+            binding.layoutError.visibility = View.GONE
+        }
+
+    }
+
+    private fun observeError() {
+        productDetailViewModel.isError.observe(viewLifecycleOwner){
+            if(it)
+                binding.layoutError.visibility = View.VISIBLE
+        }
+    }
+
 
     private fun observeLoading() {
         productDetailViewModel.isLoading.observe(viewLifecycleOwner){
@@ -95,20 +114,22 @@ class ProductDetailFragment : Fragment() {
         if (discountedPrice == null) {
             price?.let {
                 binding.productPrice.text =
-                    String.format(getString(R.string.price), it.toString())
+                    String.format(getString(R.string.price), it)
             }
         } else {
             binding.productDiscountedPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             binding.productDiscountedPrice.text =
-                String.format(getString(R.string.old_price), price.toString())
+                String.format(getString(R.string.old_price), price)
             binding.productDiscountedPrice.visibility = View.VISIBLE
             binding.productPrice.text =
-                String.format(getString(R.string.new_pirce), discountedPrice.toString())
+                String.format(getString(R.string.new_pirce), discountedPrice)
         }
     }
 
     private fun setProductName(name: String?) {
-        binding.productName.text = String.format(getString(R.string.product_name), name)
+        name?.let {
+            binding.productName.text = String.format(getString(R.string.product_name), name)
+        }
     }
 
     private fun setProductImagesToPager(images: List<String>?) {

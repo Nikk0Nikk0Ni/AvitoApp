@@ -119,6 +119,12 @@ class LoginFragment : Fragment() {
             }
 
         })
+        binding.btnRetry.setOnClickListener{
+            logInViewModel.resetError()
+            binding.tilLogin.error = null
+            binding.tilPassword.error = null
+            binding.layoutError.visibility = View.GONE
+        }
     }
 
     private fun observeError() = with(logInViewModel) {
@@ -151,6 +157,10 @@ class LoginFragment : Fragment() {
                 binding.tilLogin.error = getString(R.string.userNotFound)
                 binding.tilPassword.error = getString(R.string.userNotFound)
             }
+        }
+        isError.observe(viewLifecycleOwner){
+            if(it)
+                binding.layoutError.visibility = View.VISIBLE
         }
     }
 

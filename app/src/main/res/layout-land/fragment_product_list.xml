@@ -7,6 +7,44 @@
     android:background="@color/blue"
     tools:context=".fragments.ProductListFragment">
 
+    <LinearLayout
+        android:id="@+id/layout_error"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:elevation="5dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:background="@color/blue"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/response_error_text"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/page_not_found_svgrepo_com" />
+
+        <Button
+            android:id="@+id/btnRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:text="@string/retry_response"
+            android:textColor="@color/blue"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
     <Spinner
         android:id="@+id/sort_spinner"
         android:layout_width="0dp"
@@ -28,32 +66,32 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/sort_spinner"
-        tools:listitem="@layout/item_category_layout" />
+        tools:listitem="@layout/item_category_layout"
+        tools:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_products"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="16dp"
-        tools:listitem="@layout/item_product_layout"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rec_view_category" />
+        app:layout_constraintTop_toBottomOf="@id/rec_view_category"
+        app:spanCount="2"
+        tools:listitem="@layout/item_product_layout" />
 
     <ProgressBar
         android:id="@+id/loading_progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -65,8 +103,12 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerDetail"
         android:layout_width="0dp"
+        android:layout_margin="10dp"
+        android:padding="5dp"
+        android:background="@drawable/custom_container_view"
         android:layout_height="match_parent"
-        app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

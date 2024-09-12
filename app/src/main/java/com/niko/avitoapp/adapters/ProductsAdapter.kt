@@ -52,11 +52,11 @@ class ProductsAdapter @Inject constructor() : ListAdapter<ProductUiModel, Produc
         if (oldPrice == null)
             holder.oldPrice.visibility = View.GONE
         else {
-            holder.oldPrice.text = String.format(holder.view.context.getString(R.string.price_string),oldPrice.toString())
+            holder.oldPrice.text = String.format(holder.view.context.getString(R.string.price_string),oldPrice)
             holder.oldPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             holder.oldPrice.visibility = View.VISIBLE
         }
-        holder.newPrice.text = String.format(holder.view.context.getString(R.string.price_string),newPrice.toString())
+        holder.newPrice.text = String.format(holder.view.context.getString(R.string.price_string),newPrice)
         holder.itemView.setOnClickListener {
             getDetailInfo?.let { getInfo -> getInfo(getItem(position).id) }
         }
