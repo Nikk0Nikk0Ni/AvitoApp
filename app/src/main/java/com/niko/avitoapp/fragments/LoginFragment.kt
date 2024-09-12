@@ -1,11 +1,9 @@
 package com.niko.avitoapp.fragments
 
 import android.content.Context
-import android.graphics.Paint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,13 +15,7 @@ import com.niko.avitoapp.R
 import com.niko.avitoapp.databinding.FragmentLoginBinding
 import com.niko.avitoapp.viewModels.LogInViewModel
 import com.niko.avitoapp.viewModelsFactory.FakeApiViewModelFactory
-import data.network.RetrofitClient
-import data.repository.FakeShopApiRepositoryImpl
 import di.FakeApiApplication
-import domain.usecases.GetProductList
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 

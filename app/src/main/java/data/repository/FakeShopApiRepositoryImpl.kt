@@ -44,6 +44,7 @@ class FakeShopApiRepositoryImpl @Inject constructor(
             )
             return response.status == AuthUserResponseDTO.STATUS_SUCCESSFUL
         } catch (e: Exception) {
+            Log.e("AUF","${e.message}")
             callbackError()
             return false
         }

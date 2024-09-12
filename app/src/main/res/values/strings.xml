@@ -39,4 +39,5 @@
     <string name="product_name">%s</string>
     <string name="retry_response">Попробовать еще раз</string>
     <string name="response_error_text">Ошибка отправки запроса</string>
+    <string name="back_text">Назад</string>
 </resources>

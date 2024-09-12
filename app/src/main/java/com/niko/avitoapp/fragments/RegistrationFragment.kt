@@ -76,7 +76,7 @@ class RegistrationFragment : Fragment() {
     private fun observeCorrectRegistration() {
         registrationViewModel.isSuccessfulRegistration.observe(viewLifecycleOwner) {
             if (it) {
-                ProductListFragment.navigate(this)
+                LoginFragment.navigate(this)
             }
         }
     }

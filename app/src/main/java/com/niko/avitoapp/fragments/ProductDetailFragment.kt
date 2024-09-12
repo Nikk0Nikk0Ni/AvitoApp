@@ -1,6 +1,7 @@
 package com.niko.avitoapp.fragments
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
@@ -58,12 +59,29 @@ class ProductDetailFragment : Fragment() {
         observeLoading()
         observeError()
         resetError()
+        handleBackPressed()
         initViewPager()
+    }
+
+    private fun handleBackPressed() {
+        if (isInLandscapeMode()) {
+            binding.btnBack.setOnClickListener{
+                parentFragmentManager.popBackStack()
+            }
+        } else {
+            binding.btnBack.setOnClickListener{
+                findNavController().popBackStack()
+            }
+        }
+    }
+
+    private fun isInLandscapeMode(): Boolean {
+        return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     }
 
 
     private fun resetError() {
-        binding.btnRetry.setOnClickListener{
+        binding.btnRetry.setOnClickListener {
             productDetailViewModel.resetIsError()
             productDetailViewModel.getDetail()
             binding.layoutError.visibility = View.GONE
@@ -72,16 +90,16 @@ class ProductDetailFragment : Fragment() {
     }
 
     private fun observeError() {
-        productDetailViewModel.isError.observe(viewLifecycleOwner){
-            if(it)
+        productDetailViewModel.isError.observe(viewLifecycleOwner) {
+            if (it)
                 binding.layoutError.visibility = View.VISIBLE
         }
     }
 
 
     private fun observeLoading() {
-        productDetailViewModel.isLoading.observe(viewLifecycleOwner){
-            if(it)
+        productDetailViewModel.isLoading.observe(viewLifecycleOwner) {
+            if (it)
                 binding.loadingProgressbar.visibility = View.VISIBLE
             else
                 binding.loadingProgressbar.visibility = View.GONE
@@ -99,14 +117,16 @@ class ProductDetailFragment : Fragment() {
     }
 
     private fun setProductDescription(description: String?) {
-        description?.let{
-            binding.productDescription.text = String.format(getString(R.string.product_description),it)
+        description?.let {
+            binding.productDescription.text =
+                String.format(getString(R.string.product_description), it)
         }
     }
 
     private fun setProductCategory(category: List<String>?) {
         category?.let {
-            binding.productCategory.text = String.format(getString(R.string.product_category),it.joinToString(", "))
+            binding.productCategory.text =
+                String.format(getString(R.string.product_category), it.joinToString(", "))
         }
     }
 
@@ -147,11 +167,12 @@ class ProductDetailFragment : Fragment() {
 
     companion object {
         private const val ID = "id"
-        fun newInstance(id: String): Fragment{
+        fun newInstance(id: String): Fragment {
             return ProductDetailFragment().apply {
                 arguments = bundleOf(ID to id)
             }
         }
+
         fun navigate(fragment: Fragment, id: String) {
             fragment.findNavController()
                 .navigate(R.id.productDetailFragment, bundleOf(ID to id), navOptions {
